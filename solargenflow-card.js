@@ -8,7 +8,7 @@ class SolarGenflowCard extends HTMLElement {
     this.config = {
       title: "SolarGenflow",
       show_header: true,
-      background_image: "/local/solargenflow/energy-center.png",
+      background_image: "images/energy-center.png",
       ...config,
     };
 
@@ -100,7 +100,10 @@ class SolarGenflowCard extends HTMLElement {
           ? `- ${this._fmtW(Math.abs(batteryNet))}`
           : this._fmtW(0);
 
-    const backgroundImage = this.config.background_image || "/local/solargenflow/energy-center.png";
+    const backgroundImage = this.config.background_image || "images/energy-center.png";
+    const resolvedBackgroundImage = backgroundImage.startsWith("http") || backgroundImage.startsWith("/")
+      ? backgroundImage
+      : new URL(backgroundImage, import.meta.url).href;
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -126,7 +129,7 @@ class SolarGenflowCard extends HTMLElement {
           aspect-ratio: 16 / 9;
           min-height: 430px;
           font-family: Arial, Helvetica, sans-serif;
-          background-image: url("${backgroundImage}");
+          background-image: url("${resolvedBackgroundImage}");
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center;
