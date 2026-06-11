@@ -23,7 +23,7 @@ class SolarGenflowCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 5;
+    return 4;
   }
 
   _state(entityId) {
@@ -155,7 +155,7 @@ class SolarGenflowCard extends HTMLElement {
             radial-gradient(circle at 18% 0%, rgba(255, 179, 0, 0.16), transparent 28%),
             radial-gradient(circle at 88% 18%, rgba(56, 189, 248, 0.15), transparent 28%),
             linear-gradient(135deg, #151922 0%, #0b0e13 100%);
-          border-radius: 20px;
+          border-radius: 18px;
           overflow: hidden;
           border: 1px solid var(--sgf-border);
           color: var(--sgf-text);
@@ -163,7 +163,7 @@ class SolarGenflowCard extends HTMLElement {
         }
 
         .card {
-          padding: 14px;
+          padding: 10px;
           font-family: Arial, Helvetica, sans-serif;
           container-type: inline-size;
           overflow: hidden;
@@ -174,7 +174,7 @@ class SolarGenflowCard extends HTMLElement {
           align-items: center;
           justify-content: space-between;
           gap: 10px;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
         }
 
         .title {
@@ -195,7 +195,7 @@ class SolarGenflowCard extends HTMLElement {
 
         .status-pill {
           border-radius: 999px;
-          padding: 6px 10px;
+          padding: 5px 8px;
           color: rgba(255, 255, 255, 0.86);
           background: rgba(255, 255, 255, 0.09);
           border: 1px solid rgba(255, 255, 255, 0.12);
@@ -209,17 +209,17 @@ class SolarGenflowCard extends HTMLElement {
           grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
           grid-template-areas:
             "pv energy grid"
-            "battery energy grid"
-            "eps house house";
-          gap: 10px;
+            "battery house eps";
+          gap: 8px;
           min-width: 0;
+          align-items: stretch;
         }
 
         .node {
           --accent: rgba(255, 255, 255, 0.5);
           position: relative;
-          border-radius: 17px;
-          padding: 12px;
+          border-radius: 14px;
+          padding: 9px;
           background: linear-gradient(180deg, var(--sgf-card-strong), var(--sgf-card));
           border: 1px solid var(--sgf-border);
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 10px 20px rgba(0, 0, 0, 0.15);
@@ -230,7 +230,7 @@ class SolarGenflowCard extends HTMLElement {
           content: "";
           position: absolute;
           inset: 0;
-          border-radius: 17px;
+          border-radius: 14px;
           border-top: 3px solid var(--accent);
           pointer-events: none;
         }
@@ -239,38 +239,38 @@ class SolarGenflowCard extends HTMLElement {
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
-          gap: 8px;
-          margin-bottom: 9px;
+          gap: 6px;
+          margin-bottom: 7px;
           min-width: 0;
         }
 
         .node-title {
           display: flex;
           align-items: center;
-          gap: 7px;
+          gap: 6px;
           min-width: 0;
-          font-size: clamp(13px, 1.55cqw, 17px);
+          font-size: clamp(12px, 1.35cqw, 16px);
           font-weight: 950;
           line-height: 1.18;
         }
 
         .node-title ha-icon {
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           color: var(--accent);
           flex: 0 0 auto;
         }
 
         .node-subtitle {
           color: var(--sgf-muted);
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 800;
           text-align: right;
           white-space: nowrap;
         }
 
         .value-main {
-          font-size: clamp(27px, 4.2cqw, 38px);
+          font-size: clamp(22px, 3.4cqw, 32px);
           font-weight: 950;
           line-height: 0.98;
           letter-spacing: -0.055em;
@@ -279,9 +279,9 @@ class SolarGenflowCard extends HTMLElement {
 
         .value-small {
           color: var(--sgf-muted);
-          font-size: 12px;
+          font-size: 10.5px;
           font-weight: 800;
-          margin-top: 6px;
+          margin-top: 4px;
           line-height: 1.25;
         }
 
@@ -295,8 +295,8 @@ class SolarGenflowCard extends HTMLElement {
         .mppt-grid {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 6px;
-          margin-bottom: 10px;
+          gap: 4px;
+          margin-bottom: 7px;
         }
 
         .mppt,
@@ -307,28 +307,28 @@ class SolarGenflowCard extends HTMLElement {
         }
 
         .mppt {
-          padding: 7px 5px;
+          padding: 5px 4px;
           text-align: center;
         }
 
         .mppt span:first-child {
           display: block;
           color: var(--sgf-muted);
-          font-size: 10px;
+          font-size: 9.5px;
           font-weight: 900;
-          margin-bottom: 3px;
+          margin-bottom: 2px;
         }
 
         .mppt span:last-child {
           display: block;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 950;
           white-space: nowrap;
         }
 
         .battery-mode {
           border-radius: 999px;
-          padding: 5px 9px;
+          padding: 4px 7px;
           color: #ffffff;
           background: rgba(34, 197, 94, 0.18);
           border: 1px solid rgba(34, 197, 94, 0.35);
@@ -348,7 +348,7 @@ class SolarGenflowCard extends HTMLElement {
         }
 
         .soc-wrap {
-          margin-top: 12px;
+          margin-top: 8px;
         }
 
         .soc-label {
@@ -362,7 +362,7 @@ class SolarGenflowCard extends HTMLElement {
         }
 
         .soc-bar {
-          height: 8px;
+          height: 7px;
           border-radius: 999px;
           background: rgba(255, 255, 255, 0.14);
           overflow: hidden;
@@ -379,24 +379,24 @@ class SolarGenflowCard extends HTMLElement {
         .grid-balance {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 7px;
-          margin-top: 10px;
+          gap: 5px;
+          margin-top: 7px;
         }
 
         .metric {
-          padding: 8px;
+          padding: 6px;
         }
 
         .metric-label,
         .kpi-label {
           color: var(--sgf-muted);
-          font-size: 10.5px;
+          font-size: 9.5px;
           font-weight: 850;
           margin-bottom: 4px;
         }
 
         .metric-value {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 950;
           white-space: nowrap;
         }
@@ -404,12 +404,12 @@ class SolarGenflowCard extends HTMLElement {
         .kpis {
           display: ${this.config.show_kpis ? "grid" : "none"};
           grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 9px;
-          margin-top: 10px;
+          gap: 6px;
+          margin-top: 8px;
         }
 
         .kpi {
-          padding: 10px;
+          padding: 7px;
           border: 1px solid rgba(255, 255, 255, 0.09);
         }
 
@@ -423,10 +423,9 @@ class SolarGenflowCard extends HTMLElement {
           .layout {
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             grid-template-areas:
-              "pv energy"
-              "battery energy"
-              "grid house"
-              "eps house";
+              "pv battery"
+              "energy grid"
+              "house eps";
           }
 
           .kpis {
@@ -436,7 +435,7 @@ class SolarGenflowCard extends HTMLElement {
 
         @container (max-width: 620px) {
           .card {
-            padding: 12px;
+            padding: 9px;
           }
 
           .header {
@@ -452,11 +451,11 @@ class SolarGenflowCard extends HTMLElement {
               "grid"
               "house"
               "eps";
-            gap: 10px;
+            gap: 7px;
           }
 
           .node {
-            padding: 12px;
+            padding: 9px;
           }
 
           .mppt-grid {
@@ -470,7 +469,7 @@ class SolarGenflowCard extends HTMLElement {
           }
 
           .value-main {
-            font-size: clamp(30px, 11cqw, 40px);
+            font-size: clamp(25px, 9cqw, 34px);
           }
         }
       </style>
