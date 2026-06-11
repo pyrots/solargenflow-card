@@ -8,7 +8,6 @@ class SolarGenflowCard extends HTMLElement {
       title: "SolarGenflow",
       show_header: true,
       show_kpis: true,
-      show_flows: false,
       solarvault_name: "SolarVault 1",
       ...config,
     };
@@ -24,7 +23,7 @@ class SolarGenflowCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 7;
+    return 5;
   }
 
   _state(entityId) {
@@ -64,10 +63,6 @@ class SolarGenflowCard extends HTMLElement {
 
   _fmtPct(value) {
     return `${Math.round(Number(value) || 0)} %`;
-  }
-
-  _flowClass(value) {
-    return Math.abs(Number(value) || 0) > 5 ? "is-active" : "is-idle";
   }
 
   _signedPower(value) {
@@ -121,28 +116,31 @@ class SolarGenflowCard extends HTMLElement {
     const backupOutput = this._num(e.backup_output_power ?? e.backup_output ?? e.backup_power);
     const solarvaultAcOutput = this._num(e.solarvault_ac_output ?? e.solarvault_output);
     const solarvaultAcInput = this._num(e.solarvault_ac_input ?? e.solarvault_input);
-    const solarvaultAcPower = this._num(e.solarvault_ac_power);
 
     const solarEnergyToday = this._num(e.solar_energy_today ?? e.solar_energy_total);
     const consumptionToday = this._num(e.consumption_today ?? e.home_energy_today);
 
-    const selfConsumption = pv > 5 ? Math.min(100, Math.max(0, Math.round((Math.min(pv, domesticLoad) / pv) * 100))) : 0;
-    const efficiency = pv + gridImport > 5 ? Math.min(100, Math.max(0, Math.round((domesticLoad / Math.max(pv + gridImport, 1)) * 100))) : 0;
+    const selfConsumption = pv > 5
+      ? Math.min(100, Math.max(0, Math.round((Math.min(pv, domesticLoad) / pv) * 100)))
+      : 0;
+
+    const efficiency = pv + gridImport > 5
+      ? Math.min(100, Math.max(0, Math.round((domesticLoad / Math.max(pv + gridImport, 1)) * 100)))
+      : 0;
 
     const batteryMode = this._batteryMode(batteryNet);
     const batterySigned = this._signedPower(batteryNet);
     const gridLabel = this._gridLabel(gridImport, gridExport);
-
     const socClamped = Math.max(0, Math.min(100, soc));
 
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          --sgf-bg: #101318;
-          --sgf-panel: rgba(255, 255, 255, 0.075);
-          --sgf-panel-strong: rgba(255, 255, 255, 0.115);
-          --sgf-border: rgba(255, 255, 255, 0.14);
-          --sgf-text: rgba(255, 255, 255, 0.94);
+          --sgf-bg: #0f1218;
+          --sgf-card: rgba(255, 255, 255, 0.075);
+          --sgf-card-strong: rgba(255, 255, 255, 0.105);
+          --sgf-border: rgba(255, 255, 255, 0.13);
+          --sgf-text: rgba(255, 255, 255, 0.95);
           --sgf-muted: rgba(255, 255, 255, 0.62);
           --sgf-solar: #ffb300;
           --sgf-battery: #22c55e;
@@ -154,19 +152,18 @@ class SolarGenflowCard extends HTMLElement {
 
         ha-card {
           background:
-            radial-gradient(circle at 20% 0%, rgba(255, 179, 0, 0.18), transparent 30%),
-            radial-gradient(circle at 88% 16%, rgba(56, 189, 248, 0.16), transparent 28%),
-            linear-gradient(135deg, #151922 0%, #0c0f14 100%);
-          border-radius: 22px;
+            radial-gradient(circle at 18% 0%, rgba(255, 179, 0, 0.16), transparent 28%),
+            radial-gradient(circle at 88% 18%, rgba(56, 189, 248, 0.15), transparent 28%),
+            linear-gradient(135deg, #151922 0%, #0b0e13 100%);
+          border-radius: 20px;
           overflow: hidden;
           border: 1px solid var(--sgf-border);
           color: var(--sgf-text);
-          box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
         }
 
         .card {
-          position: relative;
-          padding: 18px;
+          padding: 14px;
           font-family: Arial, Helvetica, sans-serif;
           container-type: inline-size;
           overflow: hidden;
@@ -176,65 +173,65 @@ class SolarGenflowCard extends HTMLElement {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 16px;
+          gap: 10px;
+          margin-bottom: 12px;
         }
 
         .title {
           display: flex;
           align-items: center;
-          gap: 10px;
-          font-size: clamp(18px, 2vw, 28px);
-          font-weight: 900;
-          letter-spacing: -0.02em;
+          gap: 8px;
+          font-size: clamp(18px, 2.4cqw, 26px);
+          font-weight: 950;
+          letter-spacing: -0.03em;
         }
 
         .title ha-icon {
+          width: 24px;
+          height: 24px;
           color: var(--sgf-solar);
+          flex: 0 0 auto;
         }
 
         .status-pill {
           border-radius: 999px;
-          padding: 7px 11px;
-          color: rgba(255, 255, 255, 0.88);
+          padding: 6px 10px;
+          color: rgba(255, 255, 255, 0.86);
           background: rgba(255, 255, 255, 0.09);
           border: 1px solid rgba(255, 255, 255, 0.12);
-          font-size: 12px;
-          font-weight: 800;
+          font-size: 11px;
+          font-weight: 850;
+          white-space: nowrap;
         }
 
         .layout {
-          position: relative;
           display: grid;
-          grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr) minmax(260px, 1fr);
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
           grid-template-areas:
             "pv energy grid"
             "battery energy grid"
             "eps house house";
-          gap: 16px;
-          align-items: stretch;
+          gap: 10px;
           min-width: 0;
         }
 
         .node {
+          --accent: rgba(255, 255, 255, 0.5);
           position: relative;
-          z-index: 2;
-          border-radius: 20px;
-          padding: 16px;
-          background: linear-gradient(180deg, var(--sgf-panel-strong), var(--sgf-panel));
+          border-radius: 17px;
+          padding: 12px;
+          background: linear-gradient(180deg, var(--sgf-card-strong), var(--sgf-card));
           border: 1px solid var(--sgf-border);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 24px rgba(0, 0, 0, 0.18);
-          min-height: 118px;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 10px 20px rgba(0, 0, 0, 0.15);
           min-width: 0;
-          backdrop-filter: blur(5px);
         }
 
         .node::before {
           content: "";
           position: absolute;
           inset: 0;
-          border-radius: 20px;
-          border-top: 4px solid var(--accent);
+          border-radius: 17px;
+          border-top: 3px solid var(--accent);
           pointer-events: none;
         }
 
@@ -242,47 +239,50 @@ class SolarGenflowCard extends HTMLElement {
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
-          gap: 10px;
-          margin-bottom: 12px;
+          gap: 8px;
+          margin-bottom: 9px;
           min-width: 0;
         }
 
         .node-title {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: clamp(14px, 1.25vw, 18px);
-          font-weight: 900;
+          gap: 7px;
           min-width: 0;
+          font-size: clamp(13px, 1.55cqw, 17px);
+          font-weight: 950;
+          line-height: 1.18;
         }
 
         .node-title ha-icon {
-          width: 22px;
-          height: 22px;
+          width: 20px;
+          height: 20px;
           color: var(--accent);
           flex: 0 0 auto;
         }
 
         .node-subtitle {
           color: var(--sgf-muted);
-          font-size: 12px;
-          font-weight: 700;
+          font-size: 11px;
+          font-weight: 800;
+          text-align: right;
+          white-space: nowrap;
         }
 
         .value-main {
-          font-size: clamp(24px, 2.8vw, 42px);
+          font-size: clamp(27px, 4.2cqw, 38px);
           font-weight: 950;
-          line-height: 1;
-          letter-spacing: -0.04em;
-          word-break: keep-all;
+          line-height: 0.98;
+          letter-spacing: -0.055em;
           white-space: nowrap;
         }
 
         .value-small {
           color: var(--sgf-muted);
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 800;
           margin-top: 6px;
+          line-height: 1.25;
         }
 
         .pv { grid-area: pv; --accent: var(--sgf-solar); }
@@ -294,67 +294,77 @@ class SolarGenflowCard extends HTMLElement {
 
         .mppt-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 8px;
-          margin-bottom: 12px;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 6px;
+          margin-bottom: 10px;
+        }
+
+        .mppt,
+        .metric,
+        .kpi {
+          border-radius: 11px;
+          background: rgba(255, 255, 255, 0.075);
         }
 
         .mppt {
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.08);
-          padding: 9px 8px;
+          padding: 7px 5px;
           text-align: center;
         }
 
         .mppt span:first-child {
           display: block;
           color: var(--sgf-muted);
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 900;
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
 
         .mppt span:last-child {
           display: block;
-          color: var(--sgf-text);
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 950;
-        }
-
-        .battery-line {
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-          gap: 12px;
+          white-space: nowrap;
         }
 
         .battery-mode {
           border-radius: 999px;
-          padding: 6px 10px;
+          padding: 5px 9px;
           color: #ffffff;
           background: rgba(34, 197, 94, 0.18);
           border: 1px solid rgba(34, 197, 94, 0.35);
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 900;
+          white-space: nowrap;
+        }
+
+        .battery-mode.is-discharge {
+          background: rgba(239, 68, 68, 0.18);
+          border-color: rgba(239, 68, 68, 0.35);
+        }
+
+        .battery-mode.is-idle {
+          background: rgba(255, 255, 255, 0.09);
+          border-color: rgba(255, 255, 255, 0.14);
         }
 
         .soc-wrap {
-          margin-top: 14px;
+          margin-top: 12px;
         }
 
         .soc-label {
           display: flex;
           justify-content: space-between;
+          gap: 8px;
           color: var(--sgf-muted);
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 800;
-          margin-bottom: 6px;
+          margin-bottom: 5px;
         }
 
         .soc-bar {
-          height: 10px;
+          height: 8px;
           border-radius: 999px;
-          background: rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.14);
           overflow: hidden;
         }
 
@@ -365,106 +375,51 @@ class SolarGenflowCard extends HTMLElement {
           background: linear-gradient(90deg, #22c55e, #a3e635);
         }
 
-        .metric-row {
+        .metric-row,
+        .grid-balance {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 8px;
-          margin-top: 12px;
+          gap: 7px;
+          margin-top: 10px;
         }
 
         .metric {
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.07);
-          padding: 9px;
+          padding: 8px;
         }
 
-        .metric-label {
+        .metric-label,
+        .kpi-label {
           color: var(--sgf-muted);
-          font-size: 11px;
-          font-weight: 800;
+          font-size: 10.5px;
+          font-weight: 850;
           margin-bottom: 4px;
         }
 
         .metric-value {
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 950;
           white-space: nowrap;
-        }
-
-        .grid-balance {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 8px;
-          margin-top: 12px;
         }
 
         .kpis {
           display: ${this.config.show_kpis ? "grid" : "none"};
           grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 10px;
-          margin-top: 16px;
+          gap: 9px;
+          margin-top: 10px;
         }
 
         .kpi {
-          border-radius: 16px;
-          background: rgba(255, 255, 255, 0.075);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 12px;
-        }
-
-        .kpi-label {
-          color: var(--sgf-muted);
-          font-size: 12px;
-          font-weight: 800;
-          margin-bottom: 6px;
+          padding: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.09);
         }
 
         .kpi-value {
-          font-size: clamp(16px, 1.6vw, 24px);
+          font-size: clamp(15px, 2cqw, 22px);
           font-weight: 950;
+          white-space: nowrap;
         }
 
-        svg.flows {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-          pointer-events: none;
-          overflow: visible;
-          display: none !important;
-        }
-
-        .flow-line {
-          fill: none;
-          stroke-width: 5;
-          stroke-linecap: round;
-          stroke-dasharray: 8 12;
-          opacity: 0.9;
-          vector-effect: non-scaling-stroke;
-        }
-
-        .flow-line.is-idle {
-          opacity: 0.12;
-          animation: none;
-        }
-
-        .flow-line.is-active {
-          animation: flowMove 1.05s linear infinite;
-        }
-
-        .flow-solar { stroke: var(--sgf-solar); filter: drop-shadow(0 0 4px rgba(255, 179, 0, 0.45)); }
-        .flow-battery { stroke: var(--sgf-battery); filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.45)); }
-        .flow-grid { stroke: var(--sgf-grid); filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.45)); }
-        .flow-house { stroke: var(--sgf-house); filter: drop-shadow(0 0 4px rgba(229, 231, 235, 0.35)); }
-        .flow-eps { stroke: var(--sgf-eps); filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45)); }
-
-        @keyframes flowMove {
-          from { stroke-dashoffset: 0; }
-          to { stroke-dashoffset: -40; }
-        }
-
-        @container (max-width: 1050px) {
+        @container (max-width: 980px) {
           .layout {
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             grid-template-areas:
@@ -472,7 +427,6 @@ class SolarGenflowCard extends HTMLElement {
               "battery energy"
               "grid house"
               "eps house";
-            gap: 14px;
           }
 
           .kpis {
@@ -482,11 +436,11 @@ class SolarGenflowCard extends HTMLElement {
 
         @container (max-width: 620px) {
           .card {
-            padding: 14px;
+            padding: 12px;
           }
 
           .header {
-            align-items: flex-start;
+            margin-bottom: 10px;
           }
 
           .layout {
@@ -498,12 +452,11 @@ class SolarGenflowCard extends HTMLElement {
               "grid"
               "house"
               "eps";
-            gap: 12px;
+            gap: 10px;
           }
 
           .node {
-            padding: 14px;
-            min-height: auto;
+            padding: 12px;
           }
 
           .mppt-grid {
@@ -517,7 +470,7 @@ class SolarGenflowCard extends HTMLElement {
           }
 
           .value-main {
-            font-size: clamp(28px, 10cqw, 42px);
+            font-size: clamp(30px, 11cqw, 40px);
           }
         }
       </style>
@@ -557,14 +510,10 @@ class SolarGenflowCard extends HTMLElement {
             <section class="node battery">
               <div class="node-header">
                 <div class="node-title"><ha-icon icon="mdi:battery-high"></ha-icon><span>${this.config.solarvault_name}</span></div>
-                <div class="battery-mode">${batteryMode}</div>
+                <div class="battery-mode ${batteryMode === "Décharge" ? "is-discharge" : batteryMode === "Repos" ? "is-idle" : ""}">${batteryMode}</div>
               </div>
-              <div class="battery-line">
-                <div>
-                  <div class="value-main">${batterySigned}</div>
-                  <div class="value-small">Puissance batterie nette</div>
-                </div>
-              </div>
+              <div class="value-main">${batterySigned}</div>
+              <div class="value-small">Puissance batterie nette</div>
               <div class="soc-wrap">
                 <div class="soc-label"><span>État de charge</span><span>${this._fmtPct(soc)}</span></div>
                 <div class="soc-bar"><div class="soc-fill"></div></div>
