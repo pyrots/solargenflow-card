@@ -8,6 +8,7 @@ class SolarGenflowCard extends HTMLElement {
       title: "SolarGenflow",
       show_header: true,
       show_kpis: true,
+      show_flows: false,
       solarvault_name: "SolarVault 1",
       ...config,
     };
@@ -133,8 +134,6 @@ class SolarGenflowCard extends HTMLElement {
     const gridLabel = this._gridLabel(gridImport, gridExport);
 
     const socClamped = Math.max(0, Math.min(100, soc));
-    const flowToEnergyCenter = Math.max(homePower, solarvaultAcOutput, solarvaultAcPower, 0);
-    const gridFlow = Math.max(gridImport, gridExport, 0);
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -207,13 +206,12 @@ class SolarGenflowCard extends HTMLElement {
         .layout {
           position: relative;
           display: grid;
-          grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1.15fr);
-          grid-template-rows: auto auto auto;
+          grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr) minmax(260px, 1fr);
           grid-template-areas:
-            ". pv ."
+            "pv energy grid"
             "battery energy grid"
             "eps house house";
-          gap: 22px 28px;
+          gap: 16px;
           align-items: stretch;
           min-width: 0;
         }
@@ -434,7 +432,7 @@ class SolarGenflowCard extends HTMLElement {
           z-index: 1;
           pointer-events: none;
           overflow: visible;
-          display: block;
+          display: none !important;
         }
 
         .flow-line {
@@ -468,17 +466,13 @@ class SolarGenflowCard extends HTMLElement {
 
         @container (max-width: 1050px) {
           .layout {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             grid-template-areas:
-              "pv pv"
+              "pv energy"
               "battery energy"
               "grid house"
               "eps house";
             gap: 14px;
-          }
-
-          svg.flows {
-            display: none;
           }
 
           .kpis {
@@ -545,14 +539,6 @@ class SolarGenflowCard extends HTMLElement {
           }
 
           <div class="layout">
-            <svg class="flows" viewBox="0 0 1200 620" preserveAspectRatio="none">
-              <path class="flow-line flow-solar ${this._flowClass(pv)}" d="M600 116 L600 220"></path>
-              <path class="flow-line flow-battery ${this._flowClass(flowToEnergyCenter)}" d="M315 310 L520 310"></path>
-              <path class="flow-line flow-grid ${this._flowClass(gridFlow)}" d="M880 310 L685 310"></path>
-              <path class="flow-line flow-house ${this._flowClass(domesticLoad)}" d="M610 382 L610 505"></path>
-              <path class="flow-line flow-eps ${this._flowClass(backupOutput)}" d="M270 386 L270 505"></path>
-            </svg>
-
             <section class="node pv">
               <div class="node-header">
                 <div class="node-title"><ha-icon icon="mdi:solar-panel-large"></ha-icon><span>Solaire / PV</span></div>
