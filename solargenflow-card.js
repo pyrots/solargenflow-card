@@ -169,6 +169,8 @@ class SolarGenflowCard extends HTMLElement {
           position: relative;
           padding: 18px;
           font-family: Arial, Helvetica, sans-serif;
+          container-type: inline-size;
+          overflow: hidden;
         }
 
         .header {
@@ -205,7 +207,7 @@ class SolarGenflowCard extends HTMLElement {
         .layout {
           position: relative;
           display: grid;
-          grid-template-columns: 1.15fr 1fr 1.15fr;
+          grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1.15fr);
           grid-template-rows: auto auto auto;
           grid-template-areas:
             ". pv ."
@@ -213,6 +215,7 @@ class SolarGenflowCard extends HTMLElement {
             "eps house house";
           gap: 22px 28px;
           align-items: stretch;
+          min-width: 0;
         }
 
         .node {
@@ -224,6 +227,7 @@ class SolarGenflowCard extends HTMLElement {
           border: 1px solid var(--sgf-border);
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 24px rgba(0, 0, 0, 0.18);
           min-height: 118px;
+          min-width: 0;
           backdrop-filter: blur(5px);
         }
 
@@ -238,10 +242,11 @@ class SolarGenflowCard extends HTMLElement {
 
         .node-header {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: space-between;
           gap: 10px;
           margin-bottom: 12px;
+          min-width: 0;
         }
 
         .node-title {
@@ -250,12 +255,14 @@ class SolarGenflowCard extends HTMLElement {
           gap: 8px;
           font-size: clamp(14px, 1.25vw, 18px);
           font-weight: 900;
+          min-width: 0;
         }
 
         .node-title ha-icon {
           width: 22px;
           height: 22px;
           color: var(--accent);
+          flex: 0 0 auto;
         }
 
         .node-subtitle {
@@ -269,6 +276,8 @@ class SolarGenflowCard extends HTMLElement {
           font-weight: 950;
           line-height: 1;
           letter-spacing: -0.04em;
+          word-break: keep-all;
+          white-space: nowrap;
         }
 
         .value-small {
@@ -360,7 +369,7 @@ class SolarGenflowCard extends HTMLElement {
 
         .metric-row {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 8px;
           margin-top: 12px;
         }
@@ -381,18 +390,19 @@ class SolarGenflowCard extends HTMLElement {
         .metric-value {
           font-size: 14px;
           font-weight: 950;
+          white-space: nowrap;
         }
 
         .grid-balance {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 8px;
           margin-top: 12px;
         }
 
         .kpis {
           display: ${this.config.show_kpis ? "grid" : "none"};
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 10px;
           margin-top: 16px;
         }
@@ -424,6 +434,7 @@ class SolarGenflowCard extends HTMLElement {
           z-index: 1;
           pointer-events: none;
           overflow: visible;
+          display: block;
         }
 
         .flow-line {
@@ -432,6 +443,7 @@ class SolarGenflowCard extends HTMLElement {
           stroke-linecap: round;
           stroke-dasharray: 8 12;
           opacity: 0.9;
+          vector-effect: non-scaling-stroke;
         }
 
         .flow-line.is-idle {
@@ -454,7 +466,35 @@ class SolarGenflowCard extends HTMLElement {
           to { stroke-dashoffset: -40; }
         }
 
-        @media (max-width: 760px) {
+        @container (max-width: 1050px) {
+          .layout {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-areas:
+              "pv pv"
+              "battery energy"
+              "grid house"
+              "eps house";
+            gap: 14px;
+          }
+
+          svg.flows {
+            display: none;
+          }
+
+          .kpis {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @container (max-width: 620px) {
+          .card {
+            padding: 14px;
+          }
+
+          .header {
+            align-items: flex-start;
+          }
+
           .layout {
             grid-template-columns: 1fr;
             grid-template-areas:
@@ -467,16 +507,23 @@ class SolarGenflowCard extends HTMLElement {
             gap: 12px;
           }
 
-          svg.flows {
-            display: none;
-          }
-
-          .kpis {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .card {
+          .node {
             padding: 14px;
+            min-height: auto;
+          }
+
+          .mppt-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .metric-row,
+          .grid-balance,
+          .kpis {
+            grid-template-columns: 1fr;
+          }
+
+          .value-main {
+            font-size: clamp(28px, 10cqw, 42px);
           }
         }
       </style>
